@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:evs_app/pages/ussd_page.dart';
+import 'package:evs_app/pages/magnet.dart';
+import 'package:evs_app/pages/globals.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Home(),
       routes: {
-        '/ussd': (context) => USSD(),
+        '/magnet': (context) => Magnet(),
       },
     );
   }
@@ -29,14 +30,37 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   @override
+  void initState() {
+    super.initState();
+    androidFuture = Info.initInfo();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
       ),
-      body: RaisedButton(
-        child: Text("Get SAR"),
-        onPressed: () => Navigator.pushNamed(context, '/ussd'),
+      body: Column(
+        children: <Widget>[
+          RaisedButton(
+            child: Text("Get Magnet"),
+            onPressed: () => Navigator.pushNamed(context, '/magnet'),
+          ),
+          Center(
+            child: Container(
+              child: FutureBuilder(
+                future: androidFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done)
+                    return Text("${androidInfo.androidId}");
+                  else
+                    return CircularProgressIndicator();
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

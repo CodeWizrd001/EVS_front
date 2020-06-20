@@ -21,9 +21,11 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  ussd_service:
-  permission_handler:
-  sim_service: ^0.1.0
+  http:
+  flutter_sim_country_code: ^0.0.3
+  flutter_sensors: ^0.1.5
+  country_code: ^0.1.1
+  device_info:
   flutter:
     sdk: flutter
 
