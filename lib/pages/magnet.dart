@@ -7,6 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
 
+int normalise(num value) {
+    if (value < 0) return 0;
+    if (value > 255) return 255;
+    return value;
+  }
+
 class Magnet extends StatefulWidget {
   @override
   _MagnetState createState() => _MagnetState();
@@ -44,11 +50,6 @@ class _MagnetState extends State<Magnet> {
     );
   }
 
-  int normalise(num value) {
-    if (value < 0) return 0;
-    if (value > 255) return 255;
-    return value;
-  }
 
   double addToAverage(double average, double value) {
     if (size < double.maxFinite - 1) size += 1;
@@ -175,7 +176,7 @@ class _MagnetState extends State<Magnet> {
             RaisedButton(
               child: Text("Send Data"),
               onPressed: () {
-                makeRequest("/data",{
+                makeRequest("/add",{
                   "data" : data ,
                   "min" : min ,
                   "max" : max ,

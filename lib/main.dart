@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:evs_app/pages/charts.dart';
 import 'package:evs_app/pages/magnet.dart';
 import 'package:evs_app/pages/globals.dart';
 
@@ -18,6 +20,7 @@ class MyApp extends StatelessWidget {
       home: Home(),
       routes: {
         '/magnet': (context) => Magnet(),
+        '/chart': (context) => Chart(),
       },
     );
   }
@@ -46,6 +49,10 @@ class _HomeState extends State<Home> {
           RaisedButton(
             child: Text("Get Magnet"),
             onPressed: () => Navigator.pushNamed(context, '/magnet'),
+          ),
+          RaisedButton(
+            child: Text("Get Chart"),
+            onPressed: () => Navigator.pushNamed(context, '/chart'),
           ),
           Center(
             child: Container(
