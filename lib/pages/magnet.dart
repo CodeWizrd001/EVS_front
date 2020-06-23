@@ -8,10 +8,10 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
 
 int normalise(num value) {
-    if (value < 0) return 0;
-    if (value > 255) return 255;
-    return value;
-  }
+  if (value < 0) return 0;
+  if (value > 255) return 255;
+  return value;
+}
 
 class Magnet extends StatefulWidget {
   @override
@@ -42,6 +42,7 @@ class _MagnetState extends State<Magnet> {
   void _checkMagStatus() async {
     await manager.isSensorAvailable(Sensors.MAGNETIC_FIELD).then(
       (value) {
+        if(!mounted) return ;
         setState(() {
           _magAvail = value;
           print(value);
@@ -49,7 +50,6 @@ class _MagnetState extends State<Magnet> {
       },
     );
   }
-
 
   double addToAverage(double average, double value) {
     if (size < double.maxFinite - 1) size += 1;
@@ -65,6 +65,7 @@ class _MagnetState extends State<Magnet> {
     _magSubscription = stream.listen(
       (event) {
         _magData = event.data;
+        if(!mounted) return ;
         setState(() {
           var sq = _magData[0] * _magData[0] +
               _magData[1] * _magData[1] +
@@ -103,6 +104,11 @@ class _MagnetState extends State<Magnet> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -117,11 +123,24 @@ class _MagnetState extends State<Magnet> {
               height: 150,
             ),
             Center(
-              child: Text(
-                "EMF : ${data.toStringAsPrecision(5)}",
-                style: TextStyle(
-                  color: Color.fromRGBO(r, g, 0, 1),
-                  fontSize: 50,
+              child: Container(
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color.fromRGBO(r, g, 0, 1),
+                        blurRadius: 0.0,
+                        spreadRadius: 0.0,
+                        offset: Offset(
+                          0.0,
+                          3.0,
+                        ),
+                      ),
+                    ]),
+                child: Text(
+                  "EMF : ${data.toStringAsPrecision(5)}",
+                  style: TextStyle(
+                    fontSize: 50,
+                  ),
                 ),
               ),
             ),
@@ -135,11 +154,13 @@ class _MagnetState extends State<Magnet> {
               ),
             ),
             Center(
-              child: Text(
-                "MAX : ${max.toStringAsPrecision(5)}",
-                style: TextStyle(
-                  color: Color.fromRGBO(rmax, gmax, 0, 1),
-                  fontSize: 50,
+              child: Container(
+                color: Color.fromRGBO(rmax, gmax, 0, 1),
+                child: Text(
+                  "MAX : ${max.toStringAsPrecision(5)}",
+                  style: TextStyle(
+                    fontSize: 50,
+                  ),
                 ),
               ),
             ),
@@ -156,6 +177,7 @@ class _MagnetState extends State<Magnet> {
               child: Text("Reset Values"),
               onPressed: () {
                 _stopMag();
+                if(!mounted) return ;
                 setState(() {
                   size = 0;
                   data = 0;
@@ -175,15 +197,52 @@ class _MagnetState extends State<Magnet> {
             ),
             RaisedButton(
               child: Text("Send Data"),
-              onPressed: () {
-                makeRequest("/add",{
-                  "data" : data ,
-                  "min" : min ,
-                  "max" : max ,
-                  "avg" : avg,
-                  "id" : androidInfo.androidId ,
-                  "locale" : locale, 
-                }); 
+              onPressed: () async {
+                if (min > max)
+                  return showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Container(
+                          child: Text("Invalid Data"),
+                        ),
+                        actions: [
+                          FlatButton(
+                            child: Text("OK"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                await makeRequest("/add", {
+                  "data": data,
+                  "min": min,
+                  "max": max,
+                  "avg": avg,
+                  "id": androidInfo.androidId,
+                  "locale": locale,
+                });
+                return showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Container(
+                        child: Text("Data Sent"),
+                      ),
+                      actions: [
+                        FlatButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             )
           ],

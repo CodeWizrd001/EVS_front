@@ -3,27 +3,12 @@ import 'package:evs_app/models/models.dart';
 import 'package:evs_app/pages/request.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:random_color/random_color.dart';
 
 var v1 = 10.0;
 var v2 = 10.0;
 var v3 = 10.0;
 var v4 = 10.0;
-
-final GlobalKey<AnimatedCircularChartState> _chartKey =
-    GlobalKey<AnimatedCircularChartState>();
-List<CircularStackEntry> data = <CircularStackEntry>[
-  CircularStackEntry(
-    <CircularSegmentEntry>[
-      CircularSegmentEntry(v1, Colors.red, rankKey: 'Q1'),
-      CircularSegmentEntry(v2, Colors.green, rankKey: 'Q2'),
-      CircularSegmentEntry(v3, Colors.blue, rankKey: 'Q3'),
-      CircularSegmentEntry(v4, Colors.yellow, rankKey: 'Q4'),
-    ],
-    rankKey: 'Quarterly Profits',
-  ),
-];
 
 Color getRandomColor() {
   return RandomColor().randomColor();
@@ -74,6 +59,11 @@ class _ChartState extends State<Chart> {
       data: graphData,
     );
     return graphData;
+  }
+
+  @override
+  void dispose(){
+    super.dispose() ;
   }
 
   @override

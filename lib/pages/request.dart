@@ -11,6 +11,5 @@ makeRequest(String endpoint, Map<String, dynamic> body) async {
     },
     body: jsonEncode( body ),
   );
-  print(response.body);
   return jsonDecode(response.body) ;
 }

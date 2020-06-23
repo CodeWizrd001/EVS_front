@@ -6,7 +6,7 @@ DeviceInfoPlugin deviceInfo = DeviceInfoPlugin() ;
 AndroidDeviceInfo androidInfo  ;
 Future<AndroidDeviceInfo> androidFuture ;
 
-var host = "192.168.1.33" ;
+var host = "3.16.28.159" ;
 var port = 8000 ;
 var url = "http://$host:$port" ;
 String locale ;
