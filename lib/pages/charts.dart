@@ -1,10 +1,10 @@
-import 'dart:math';
-
-import 'package:evs_app/pages/magnet.dart';
+import 'package:charts_flutter/flutter.dart' as chart;
+import 'package:evs_app/models/models.dart';
 import 'package:evs_app/pages/request.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
+import 'package:random_color/random_color.dart';
 
 var v1 = 10.0;
 var v2 = 10.0;
@@ -25,49 +25,88 @@ List<CircularStackEntry> data = <CircularStackEntry>[
   ),
 ];
 
+Color getRandomColor() {
+  return RandomColor().randomColor();
+}
+
+List<Values> graphData = [];
+chart.Series minSeries;
+chart.Series avgSeries;
+chart.Series maxSeries;
+
 class Chart extends StatefulWidget {
   @override
   _ChartState createState() => _ChartState();
 }
 
 class _ChartState extends State<Chart> {
-  Future<List<CircularStackEntry>> getChartData() async {
-    Map<String,List<Map<String,dynamic>>> response = await makeRequest('/get', {});
-    var avgData = 0.0;
-    var len = response['CountriesData'].length ;
+  Future<List<Values>> getChartData() async {
+    Map<String, dynamic> response = await makeRequest('/get', {});
+    List<Values> retData = [];
+    var len = response['CountriesData'].length;
     response['CountriesData'].forEach((element) {
-      avgData = 0 ;
-      element['avg'].forEach((value){
-        avgData += 1 ;
-      }) ;
-      avgData = avgData/len ;
-      data[0]
-          .entries
-          .add(CircularSegmentEntry(avgData, Colors.red[normalise(avgData.floor())]));
+      retData.add(Values.fromJson(element));
     });
-    return data;
+    return retData;
+  }
+
+  Future<List<Values>> getGraphData() async {
+    graphData = await getChartData();
+    minSeries = chart.Series<Values, String>(
+      id: "Min",
+      domainFn: (Values val, _) => val.country,
+      measureFn: (Values val, _) => val.min,
+      colorFn: (_, __) => chart.MaterialPalette.green.shadeDefault,
+      data: graphData,
+    );
+    avgSeries = chart.Series<Values, String>(
+      id: "Avg",
+      domainFn: (Values val, _) => val.country,
+      measureFn: (Values val, _) => val.avg,
+      colorFn: (_, __) => chart.MaterialPalette.yellow.shadeDefault,
+      data: graphData,
+    );
+    maxSeries = chart.Series<Values, String>(
+      id: "Max",
+      domainFn: (Values val, _) => val.country,
+      measureFn: (Values val, _) => val.max,
+      colorFn: (_, __) => chart.MaterialPalette.red.shadeDefault,
+      data: graphData,
+    );
+    return graphData;
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text("Analysis"),
+        ),
         body: Center(
           child: Column(
             children: <Widget>[
               FutureBuilder(
-                future: getChartData(),
+                future: getGraphData(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done)
-                    return AnimatedCircularChart(
-                      key: _chartKey,
-                      size: const Size(400.0, 400.0),
-                      initialChartData: snapshot.data,
-                      chartType: CircularChartType.Radial,
-                      startAngle: 0,
-                      duration: Duration(seconds: 1),
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Container(
+                      height: MediaQuery.of(context).size.height - 100,
+                      child: chart.BarChart(
+                        [
+                          minSeries,
+                          avgSeries,
+                          maxSeries,
+                        ],
+                        barGroupingType: chart.BarGroupingType.grouped,
+                        behaviors: [
+                          chart.SlidingViewport(),
+                          chart.PanAndZoomBehavior(),
+                          chart.SeriesLegend(),
+                        ],
+                      ),
                     );
-                  else
+                  } else
                     return CircularProgressIndicator();
                 },
               ),
