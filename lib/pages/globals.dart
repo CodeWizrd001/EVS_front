@@ -6,7 +6,7 @@ DeviceInfoPlugin deviceInfo = DeviceInfoPlugin() ;
 AndroidDeviceInfo androidInfo  ;
 Future<AndroidDeviceInfo> androidFuture ;
 
-var host = "3.16.28.159" ;
+var host = "192.168.1.33" ;
 var port = 8000 ;
 var url = "http://$host:$port" ;
 String locale ;
@@ -15,7 +15,6 @@ class Info {
   static Future<AndroidDeviceInfo> initInfo() async {
     androidInfo = await deviceInfo.androidInfo ;
     locale = await FlutterSimCountryCode.simCountryCode ;
-    var country = CountryCode.IN ;
     print("Init Done $locale ${CountryCode.parse(locale)}") ;
     return await deviceInfo.androidInfo ;
   }
