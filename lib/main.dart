@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:evs_app/pages/charts.dart';
 import 'package:evs_app/pages/magnet.dart';
 import 'package:evs_app/pages/globals.dart';
+import 'package:evs_app/pages/ads.dart' ;
 
 void main() {
   runApp(MyApp());
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/chart': (context) => Chart(),
         '/history': (context) => Previous(),
         '/compare': (context) => Compare(),
+        '/ad':(context) => Add() ,
       },
     );
   }
@@ -59,6 +61,10 @@ class _HomeState extends State<Home> {
             FlatButton(
               child: Text("About"),
               onPressed: () => null,
+            ),
+            FlatButton(
+              child: Text("View Ad"),
+              onPressed: () => Navigator.pushNamed(context, '/ad'),
             )
           ],
         ),
