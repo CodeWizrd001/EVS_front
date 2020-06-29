@@ -86,25 +86,28 @@ class _CompareState extends State<Compare> {
       appBar: AppBar(
         title: Text("Comparison"),
       ),
-      body: FutureBuilder(
-        future: getData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData)
-              return BarChart(
-                snapshot.data,
-                barGroupingType: BarGroupingType.grouped,
-                behaviors: [
-                  SlidingViewport(),
-                  PanAndZoomBehavior(),
-                  SeriesLegend(),
-                ],
-              );
-            else
-              return Text("Fetch Failed");
-          } else
-            return CircularProgressIndicator();
-        },
+      body: Container(
+        height: MediaQuery.of(context).size.height - 150,
+        child: FutureBuilder(
+          future: getData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData)
+                return BarChart(
+                  snapshot.data,
+                  barGroupingType: BarGroupingType.grouped,
+                  behaviors: [
+                    SlidingViewport(),
+                    PanAndZoomBehavior(),
+                    SeriesLegend(),
+                  ],
+                );
+              else
+                return Text("Fetch Failed");
+            } else
+              return Center(child: CircularProgressIndicator());
+          },
+        ),
       ),
     );
   }

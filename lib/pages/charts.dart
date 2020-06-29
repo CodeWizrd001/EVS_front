@@ -2,6 +2,7 @@ import 'package:charts_flutter/flutter.dart' as chart;
 import 'package:evs_app/models/models.dart';
 import 'package:evs_app/pages/request.dart';
 import 'package:flutter/material.dart';
+import 'package:evs_app/pages/globals.dart';
 
 import 'package:random_color/random_color.dart';
 
@@ -14,7 +15,6 @@ Color getRandomColor() {
   return RandomColor().randomColor();
 }
 
-List<Values> graphData = [];
 chart.Series minSeries;
 chart.Series avgSeries;
 chart.Series maxSeries;
@@ -62,8 +62,8 @@ class _ChartState extends State<Chart> {
   }
 
   @override
-  void dispose(){
-    super.dispose() ;
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -81,7 +81,7 @@ class _ChartState extends State<Chart> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return Container(
-                      height: MediaQuery.of(context).size.height - 100,
+                      height: MediaQuery.of(context).size.height - 150,
                       child: chart.BarChart(
                         [
                           minSeries,

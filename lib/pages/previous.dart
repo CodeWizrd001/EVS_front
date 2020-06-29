@@ -48,7 +48,7 @@ class _PreviousState extends State<Previous> {
         child: Column(
           children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height - 150,
+              height: MediaQuery.of(context).size.height - 200,
               child: FutureBuilder(
                 future: getListData(),
                 builder: (context, snapshot) {
@@ -58,11 +58,7 @@ class _PreviousState extends State<Previous> {
                     else
                       return Text("Failed To Fetch");
                   } else
-                    return Container(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(),
-                    );
+                    return Center(child: CircularProgressIndicator());
                 },
               ),
             ),

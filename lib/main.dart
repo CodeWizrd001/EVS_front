@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:evs_app/pages/charts.dart';
 import 'package:evs_app/pages/magnet.dart';
 import 'package:evs_app/pages/globals.dart';
-import 'package:evs_app/pages/ads.dart' ;
+import 'package:evs_app/pages/ads.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         '/chart': (context) => Chart(),
         '/history': (context) => Previous(),
         '/compare': (context) => Compare(),
-        '/ad':(context) => Add() ,
+        '/ad': (context) => Add(),
       },
     );
   }
@@ -38,10 +38,17 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var homePageCont = PageController(
+    initialPage: 1,
+  );
+
+  var getAdd = Add();
+
   @override
   void initState() {
     super.initState();
     androidFuture = Info.initInfo();
+    getBannerAd();
   }
 
   @override
@@ -72,142 +79,181 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text("Home"),
       ),
-      body: ListView(
-        children: <Widget>[
-          SizedBox(
-            height: 10,
-          ),
-          Row(
+      body: PageView(
+        controller: homePageCont,
+        children: [
+          ListView(
             children: <Widget>[
-              SizedBox(
-                width: 10,
-              ),
-              RaisedButton(
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: MediaQuery.of(context).size.width / 3,
-                  child: Center(
-                    child: Center(
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width / 4,
-                            height: MediaQuery.of(context).size.width / 4,
-                            child: Icon(
-                              Icons.explore,
-                              size: 75,
-                            ),
-                          ),
-                          Text("Get Magnet"),
-                        ],
-                      ),
-                    ),
-                  ),
+              Center(
+                child: RaisedButton(
+                  onPressed: () => null,
                 ),
-                onPressed: () => Navigator.pushNamed(context, '/magnet'),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 3 - 90,
-              ),
-              RaisedButton(
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: MediaQuery.of(context).size.width / 3,
-                  child: Center(
-                    child: Center(
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width / 4,
-                            height: MediaQuery.of(context).size.width / 4,
-                            child: Icon(
-                              Icons.table_chart,
-                              size: 75,
-                            ),
-                          ),
-                          Text("Get Chart"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                onPressed: () => Navigator.pushNamed(context, '/chart'),
               ),
             ],
           ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
+          MainPage(),
+          ListView(
             children: <Widget>[
-              SizedBox(
-                width: 10,
-              ),
-              RaisedButton(
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: MediaQuery.of(context).size.width / 3,
-                  child: Center(
-                    child: Center(child: Column(
-                      children: <Widget>[Container(
-                            width: MediaQuery.of(context).size.width / 4,
-                            height: MediaQuery.of(context).size.width / 4,
-                            child: Icon(
-                              Icons.history,
-                              size: 75,
-                            ),
-                          ),
-                        Text("Get Previous"),
-                      ],
-                    )),
-                  ),
+              Center(
+                child: RaisedButton(
+                  onPressed: () => null,
                 ),
-                onPressed: () => Navigator.pushNamed(context, '/history'),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 3 - 90,
-              ),
-              RaisedButton(
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: MediaQuery.of(context).size.width / 3,
-                  child: Center(
-                    child: Center(child: Column(
-                      children: <Widget>[Container(
-                            width: MediaQuery.of(context).size.width / 4,
-                            height: MediaQuery.of(context).size.width / 4,
-                            child: Icon(
-                              Icons.remove_circle,
-                              size: 75,
-                            ),
-                          ),
-                        Text("Do Nothing"),
-                      ],
-                    )),
-                  ),
-                ),
-                onPressed: () => null,
               ),
             ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Center(
-            child: Container(
-              child: FutureBuilder(
-                future: androidFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done)
-                    return Text("${androidInfo.androidId}");
-                  else
-                    return CircularProgressIndicator();
-                },
-              ),
-            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: <Widget>[
+            SizedBox(
+              width: 10,
+            ),
+            RaisedButton(
+              child: Container(
+                width: MediaQuery.of(context).size.width / 3,
+                height: MediaQuery.of(context).size.width / 3,
+                child: Center(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width / 4,
+                          height: MediaQuery.of(context).size.width / 4,
+                          child: Icon(
+                            Icons.explore,
+                            size: 75,
+                          ),
+                        ),
+                        Text("Get Magnet"),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () => Navigator.pushNamed(context, '/magnet'),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 3 - 90,
+            ),
+            RaisedButton(
+              child: Container(
+                width: MediaQuery.of(context).size.width / 3,
+                height: MediaQuery.of(context).size.width / 3,
+                child: Center(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width / 4,
+                          height: MediaQuery.of(context).size.width / 4,
+                          child: Icon(
+                            Icons.table_chart,
+                            size: 75,
+                          ),
+                        ),
+                        Text("Get Chart"),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () => Navigator.pushNamed(context, '/chart'),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: <Widget>[
+            SizedBox(
+              width: 10,
+            ),
+            RaisedButton(
+              child: Container(
+                width: MediaQuery.of(context).size.width / 3,
+                height: MediaQuery.of(context).size.width / 3,
+                child: Center(
+                  child: Center(
+                      child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width / 4,
+                        height: MediaQuery.of(context).size.width / 4,
+                        child: Icon(
+                          Icons.history,
+                          size: 75,
+                        ),
+                      ),
+                      Text("Get Previous"),
+                    ],
+                  )),
+                ),
+              ),
+              onPressed: () => Navigator.pushNamed(context, '/history'),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 3 - 90,
+            ),
+            RaisedButton(
+              child: Container(
+                width: MediaQuery.of(context).size.width / 3,
+                height: MediaQuery.of(context).size.width / 3,
+                child: Center(
+                  child: Center(
+                      child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width / 4,
+                        height: MediaQuery.of(context).size.width / 4,
+                        child: Icon(
+                          Icons.remove_circle,
+                          size: 75,
+                        ),
+                      ),
+                      Text("Do Nothing"),
+                    ],
+                  )),
+                ),
+              ),
+              onPressed: () => null,
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Center(
+          child: Container(
+            child: FutureBuilder(
+              future: androidFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done)
+                  return Text("${androidInfo.androidId}");
+                else
+                  return CircularProgressIndicator();
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

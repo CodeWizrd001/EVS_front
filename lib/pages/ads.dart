@@ -2,23 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 
 const String testDevice = 'MobileId';
+bool adinit = false;
+int coins = 0;
+
+BannerAd commonBanner;
+RewardedVideoAd videoAd = RewardedVideoAd.instance;
+
+getBannerAd() {
+  AddState.adInit();
+  //Change appId With Admob Id
+  commonBanner = AddState.createBannerAd()
+    ..load()
+    ..show();
+}
 
 class Add extends StatefulWidget {
   @override
-  _AddState createState() => _AddState();
+  AddState createState() => AddState();
 }
 
-class _AddState extends State<Add> {
+class AddState extends State<Add> {
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    testDevices: testDevice != null ? <String>[testDevice] : null,
     nonPersonalizedAds: true,
-    keywords: <String>['Game', 'Mario'],
   );
 
   BannerAd _bannerAd;
   InterstitialAd _interstitialAd;
 
-  BannerAd createBannerAd() {
+  static BannerAd createBannerAd() {
     print("Ad $targetingInfo");
     return BannerAd(
         //adUnitId: BannerAd.testAdUnitId,
@@ -31,7 +42,7 @@ class _AddState extends State<Add> {
         });
   }
 
-  InterstitialAd createInterstitialAd() {
+  static InterstitialAd createInterstitialAd() {
     return InterstitialAd(
         //adUnitId: InterstitialAd.testAdUnitId,
         adUnitId: 'ca-app-pub-9864167210400678/7724165595',
@@ -42,12 +53,37 @@ class _AddState extends State<Add> {
         });
   }
 
-  @override
-  void initState() {
+  static createRewardAd() async {
+    await videoAd.load(
+      adUnitId: "ca-app-pub-9864167210400678/7399311081",
+      targetingInfo: targetingInfo,
+    );
+    videoAd.show();
+  }
+
+  static adInit() {
+    if (adinit) return;
     FirebaseAdMob.instance
         .initialize(appId: "ca-app-pub-9864167210400678/8432217385");
     FirebaseAdMob.instance
         .initialize(appId: "ca-app-pub-9864167210400678/7724165595");
+    FirebaseAdMob.instance
+        .initialize(appId: "ca-app-pub-9864167210400678/7399311081");
+    FirebaseAdMob.instance
+        .initialize(appId: "ca-app-pub-9864167210400678/3268494389");
+    videoAd.listener =
+        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+      print("$event");
+      if (event == RewardedVideoAdEvent.rewarded) coins += 1;
+      print(rewardType);
+      print(rewardAmount);
+    };
+    adinit = true;
+  }
+
+  @override
+  void initState() {
+    adInit();
     //Change appId With Admob Id
     _bannerAd = createBannerAd()
       ..load()
@@ -69,13 +105,23 @@ class _AddState extends State<Add> {
         title: Text("Demo App"),
       ),
       body: Center(
-        child: RaisedButton(
-          child: Text('Click on Ads'),
-          onPressed: () {
-            createInterstitialAd()
-              ..load()
-              ..show();
-          },
+        child: Column(
+          children: <Widget>[
+            RaisedButton(
+              child: Text('Click on Ads'),
+              onPressed: () {
+                createInterstitialAd()
+                  ..load()
+                  ..show();
+              },
+            ),
+            RaisedButton(
+              child: Text('Click on Reward'),
+              onPressed: () {
+                createRewardAd();
+              },
+            ),
+          ],
         ),
       ),
     );
