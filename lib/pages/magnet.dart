@@ -38,10 +38,15 @@ class _MagnetState extends State<Magnet> {
   PageController magnetPageController = PageController();
 
   bool _magAvail = false;
+  bool started = false;
   List<double> _magData;
 
   TextStyle thStyle = TextStyle(
     color: Colors.white,
+    fontSize: 30,
+  );
+  TextStyle thStyle2 = TextStyle(
+    color: Colors.black,
     fontSize: 30,
   );
 
@@ -99,8 +104,77 @@ class _MagnetState extends State<Magnet> {
     );
   }
 
+  Widget getSendButton() {
+    return RaisedButton(
+      child: Text("Send Data"),
+      onPressed: () async {
+        if (min > max)
+          return showDialog<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: Container(
+                  child: Text("Invalid Data"),
+                ),
+                actions: [
+                  FlatButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        await makeRequest("/add", {
+          "data": data,
+          "min": min,
+          "max": max,
+          "avg": avg,
+          "id": androidInfo.androidId,
+          "locale": locale,
+        });
+        return showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Container(
+                child: Text("Data Sent"),
+              ),
+              actions: [
+                FlatButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   void _stopMag() {
-    _magSubscription.cancel();
+    if (_magSubscription != null) _magSubscription.cancel();
+    if (!mounted) return;
+    setState(() {
+      size = 0;
+      data = 0;
+      min = 10000;
+      max = 0;
+      avg = 0;
+      r = 0;
+      g = 0;
+      rmin = 0;
+      rmax = 0;
+      gmin = 0;
+      gmax = 0;
+      ravg = 0;
+      gavg = 0;
+    });
   }
 
   @override
@@ -122,8 +196,12 @@ class _MagnetState extends State<Magnet> {
         backgroundColor: Colors.black,
         body: PageView(
           controller: magnetPageController,
+          onPageChanged: (value) {
+            _stopMag();
+          },
           children: <Widget>[
             getNormalMaget(),
+            getRadialMagnet(),
             Container(
               color: Colors.white,
             ),
@@ -131,6 +209,223 @@ class _MagnetState extends State<Magnet> {
               color: Colors.red,
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  int guageNormalise(num value) {
+    value = value ~/ 2;
+    if (value < 0) return 0;
+    if (value > 500) return 500;
+    return value;
+  }
+
+  double getDoubleData() {
+    var val = guageNormalise((((data - 20) * 3.1415926535897932)).toInt())
+            .toDouble() /
+        1000;
+    // print("Sending $val");
+    return val;
+  }
+
+  getRadialMagnet() {
+    //print("Got ${getDoubleData()}");
+    return Container(
+      color: Colors.white,
+      child: Center(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              Container(
+                child: Column(
+                  children: <Widget>[
+                    CustomPaint(
+                      painter: GradientArcPainter(
+                          progress: 100,
+                          width: 15,
+                          gradient: LinearGradient(
+                            tileMode: TileMode.repeated,
+                            colors: [
+                              Colors.green,
+                              Colors.yellow,
+                              Colors.red,
+                            ],
+                          )),
+                      size: Size(275, 275),
+                    ),
+                    RotationTransition(
+                      turns: AlwaysStoppedAnimation(getDoubleData()),
+                      child: Text(
+                        "<----          ",
+                        style: TextStyle(
+                          fontSize: 50,
+                          color: Color.fromRGBO(r, g, 0, 1),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    // SizedBox(height: 50),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(child: Text("0       ")),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(
+                              child: Text("${data.toStringAsPrecision(5)}")),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(child: Text("     500")),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RaisedButton(
+                      color: started
+                          ? Color.fromRGBO(30, 255, 30, 1)
+                          : Color.fromRGBO(255, 30, 30, 1),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 2 - 50,
+                        height: MediaQuery.of(context).size.width / 2 - 50,
+                        child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              Icon(
+                                Icons.power,
+                                size:
+                                    MediaQuery.of(context).size.width / 2 - 75,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        started = !started;
+                        print(started);
+                        setState(() {
+                          if (started)
+                            _stopMag();
+                          else
+                            _startMag();
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 5)),
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(
+                            child: Text(
+                              "MIN",
+                              style: thStyle2,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 5)),
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(
+                            child: Text(
+                              "AVG",
+                              style: thStyle2,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 5)),
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(
+                            child: Text(
+                              "MAX",
+                              style: thStyle2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(rmin, gmin, 0, 1),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 5,
+                            ),
+                          ),
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(
+                            child: Text(
+                              "${min.toStringAsPrecision(5)}",
+                              style: TextStyle(
+                                fontSize: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(ravg, gavg, 0, 1),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 5,
+                            ),
+                          ),
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(
+                            child: Text(
+                              "${avg.toStringAsPrecision(5)}",
+                              style: TextStyle(
+                                fontSize: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(rmax, gmax, 0, 1),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 5,
+                            ),
+                          ),
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(
+                            child: Text(
+                              "${max.toStringAsPrecision(5)}",
+                              style: TextStyle(
+                                fontSize: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    getSendButton(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -319,22 +614,6 @@ class _MagnetState extends State<Magnet> {
               ),
               onPressed: () {
                 _stopMag();
-                if (!mounted) return;
-                setState(() {
-                  size = 0;
-                  data = 0;
-                  min = 10000;
-                  max = 0;
-                  avg = 0;
-                  r = 0;
-                  g = 0;
-                  rmin = 0;
-                  rmax = 0;
-                  gmin = 0;
-                  gmax = 0;
-                  ravg = 0;
-                  gavg = 0;
-                });
               },
             ),
           ],
@@ -342,57 +621,40 @@ class _MagnetState extends State<Magnet> {
         SizedBox(
           height: 10,
         ),
-        RaisedButton(
-          child: Text("Send Data"),
-          onPressed: () async {
-            if (min > max)
-              return showDialog<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: Container(
-                      child: Text("Invalid Data"),
-                    ),
-                    actions: [
-                      FlatButton(
-                        child: Text("OK"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            await makeRequest("/add", {
-              "data": data,
-              "min": min,
-              "max": max,
-              "avg": avg,
-              "id": androidInfo.androidId,
-              "locale": locale,
-            });
-            return showDialog<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  content: Container(
-                    child: Text("Data Sent"),
-                  ),
-                  actions: [
-                    FlatButton(
-                      child: Text("OK"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
+        getSendButton(),
       ],
     );
   }
+}
+
+class GradientArcPainter extends CustomPainter {
+  const GradientArcPainter(
+      {@required this.progress, @required this.width, @required this.gradient})
+      : assert(progress != null),
+        assert(width != null),
+        super();
+
+  final double progress;
+  final double width;
+  final Gradient gradient;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Rect.fromLTWH(0.0, 0.0, size.width, size.height);
+
+    final paint = new Paint()
+      ..shader = gradient.createShader(rect)
+      ..strokeCap = StrokeCap.butt // StrokeCap.round is not recommended.
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width;
+    final center = Offset(size.width / 2, size.height + 30);
+    final radius = min(size.width / 2, size.height / 2) - (width / 2);
+    final startAngle = -pi;
+    final sweepAngle = pi;
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
+        sweepAngle, false, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

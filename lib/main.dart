@@ -1,3 +1,4 @@
+import 'package:evs_app/pages/about.dart';
 import 'package:evs_app/pages/compare.dart';
 import 'package:evs_app/pages/previous.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Radiation Detector',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/history': (context) => Previous(),
         '/compare': (context) => Compare(),
         '/ad': (context) => Add(),
+        '/about': (context) => About(),
       },
     );
   }
@@ -42,12 +44,13 @@ class _HomeState extends State<Home> {
     initialPage: 1,
   );
 
-  var getAdd = Add();
-
   @override
   void initState() {
     super.initState();
-    androidFuture = Info.initInfo();
+    if (!init) {
+      androidFuture = Info.initInfo();
+      init = true;
+    }
     getBannerAd();
   }
 
@@ -60,20 +63,44 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 100,
-            ),
-            FlatButton(
-              child: Text("About"),
-              onPressed: () => null,
-            ),
-            FlatButton(
-              child: Text("View Ad"),
-              onPressed: () => Navigator.pushNamed(context, '/ad'),
-            )
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              DrawerHeader(
+                child: Column(
+                  children: <Widget>[
+                    CircleAvatar(
+                      radius: 35,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 18.5,
+                        ),
+                        Text("Coins : $coins"),
+                        FlatButton(
+                          child: Icon(Icons.refresh),
+                          onPressed: () {
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                    Text("Unique ID : ${androidInfo.androidId}")
+                  ],
+                ),
+              ),
+              FlatButton(
+                child: Text("About"),
+                onPressed: () => Navigator.pushNamed(context, '/about'),
+              ),
+              FlatButton(
+                child: Text("View Ad"),
+                onPressed: () => Navigator.pushNamed(context, '/ad'),
+              )
+            ],
+          ),
         ),
       ),
       appBar: AppBar(
@@ -245,9 +272,9 @@ class _MainPageState extends State<MainPage> {
             child: FutureBuilder(
               future: androidFuture,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done)
+                if (snapshot.connectionState == ConnectionState.done) {
                   return Text("${androidInfo.androidId}");
-                else
+                } else
                   return CircularProgressIndicator();
               },
             ),

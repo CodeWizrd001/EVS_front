@@ -3,6 +3,7 @@ import 'package:evs_app/pages/request.dart';
 import 'package:flutter/material.dart';
 
 bool empty = true;
+bool rebuildPrevious = true;
 
 class Previous extends StatefulWidget {
   @override
@@ -23,14 +24,25 @@ class _PreviousState extends State<Previous> {
         ),
       );
     }
-    empty = false;
+    if (rebuildPrevious)
+      setState(() {
+        empty = false;
+        rebuildPrevious = false;
+      });
     if (data.isEmpty) {
       data.add(ListTile(
         title: Text("No Previous Data"),
       ));
       empty = true;
+      rebuildPrevious = false;
     }
     return data;
+  }
+
+  @override
+  void initState() {
+    rebuildPrevious = true;
+    super.initState();
   }
 
   @override
