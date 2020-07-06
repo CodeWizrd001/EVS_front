@@ -59,6 +59,11 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
+  getId() {
+    if (androidInfo == null) return "id";
+    return androidInfo.androidId;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +92,7 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     ),
-                    Text("Unique ID : ${androidInfo.androidId}")
+                    Text("Unique ID : ${getId()}")
                   ],
                 ),
               ),
