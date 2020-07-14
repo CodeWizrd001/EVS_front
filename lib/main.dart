@@ -147,44 +147,56 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(
           height: 10,
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(
               width: 10,
             ),
-            RaisedButton(
-              child: Container(
-                width: MediaQuery.of(context).size.width / 3,
-                height: MediaQuery.of(context).size.width / 3,
-                child: Center(
+            Container(
+              child: RaisedButton(
+                color: Colors.blue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100)),
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 3,
+                  height: MediaQuery.of(context).size.width / 3,
                   child: Center(
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width / 4,
-                          height: MediaQuery.of(context).size.width / 4,
-                          child: Icon(
-                            Icons.explore,
-                            size: 75,
+                    child: Center(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width / 4,
+                            height: MediaQuery.of(context).size.width / 4,
+                            child: Icon(
+                              Icons.explore,
+                              color: Colors.white,
+                              size: 75,
+                            ),
                           ),
-                        ),
-                        Text("Get Magnet"),
-                      ],
+                          Text("Get Magnet",style: TextStyle(color: Colors.white),),
+                        ],
+                      ),
                     ),
                   ),
                 ),
+                onPressed: () => Navigator.pushNamed(context, '/magnet'),
               ),
-              onPressed: () => Navigator.pushNamed(context, '/magnet'),
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width / 3 - 90,
+              // width: MediaQuery.of(context).size.width / 3 - 90,
+              width: 10,
             ),
             RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100)),
+                  color: Colors.blue,
               child: Container(
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.width / 3,
@@ -198,9 +210,10 @@ class _MainPageState extends State<MainPage> {
                           child: Icon(
                             Icons.table_chart,
                             size: 75,
+                            color: Colors.white,
                           ),
                         ),
-                        Text("Get Chart"),
+                        Text("Get Chart",style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),
@@ -214,11 +227,12 @@ class _MainPageState extends State<MainPage> {
           height: 10,
         ),
         Row(
+            mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              width: 10,
-            ),
             RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100)),
+                  color: Colors.blue,
               child: Container(
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.width / 3,
@@ -232,9 +246,10 @@ class _MainPageState extends State<MainPage> {
                         child: Icon(
                           Icons.history,
                           size: 75,
+                          color: Colors.white,
                         ),
                       ),
-                      Text("Get Previous"),
+                      Text("Get Previous",style: TextStyle(color: Colors.white)),
                     ],
                   )),
                 ),
@@ -242,9 +257,12 @@ class _MainPageState extends State<MainPage> {
               onPressed: () => Navigator.pushNamed(context, '/history'),
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width / 3 - 90,
+              width: 10,
             ),
             RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100)),
+                color: Colors.blue,
               child: Container(
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.width / 3,
@@ -258,9 +276,10 @@ class _MainPageState extends State<MainPage> {
                         child: Icon(
                           Icons.remove_circle,
                           size: 75,
+                          color: Colors.white,
                         ),
                       ),
-                      Text("Do Nothing"),
+                      Text("Do Nothing",style: TextStyle(color: Colors.white)),
                     ],
                   )),
                 ),

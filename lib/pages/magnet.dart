@@ -106,7 +106,9 @@ class _MagnetState extends State<Magnet> {
 
   Widget getSendButton() {
     return RaisedButton(
-      child: Text("Send Data"),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+      color: Colors.blue,
+      child: Container(width: 200, child: Center(child: Text("Send Data"))),
       onPressed: () async {
         if (min > max)
           return showDialog<void>(
@@ -287,6 +289,8 @@ class _MagnetState extends State<Magnet> {
                       height: 20,
                     ),
                     RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
                       color: started
                           ? Color.fromRGBO(30, 255, 30, 1)
                           : Color.fromRGBO(255, 30, 30, 1),
@@ -421,6 +425,23 @@ class _MagnetState extends State<Magnet> {
                       height: 5,
                     ),
                     getSendButton(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.chevron_left,
+                          size: 80,
+                        ),
+                        Icon(
+                          Icons.chevron_right,
+                          size: 80,
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "Swipe",
+                      style: TextStyle(fontSize: 20),
+                    ),
                   ],
                 ),
               ),
@@ -571,6 +592,8 @@ class _MagnetState extends State<Magnet> {
               width: 10,
             ),
             RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50)),
               color: Color.fromRGBO(0, 255, 0, 1),
               child: Container(
                 decoration: BoxDecoration(
@@ -596,6 +619,8 @@ class _MagnetState extends State<Magnet> {
               width: 10,
             ),
             RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50)),
               color: Color.fromRGBO(255, 30, 30, 1),
               child: Container(
                 width: MediaQuery.of(context).size.width / 2 - 50,
@@ -622,6 +647,28 @@ class _MagnetState extends State<Magnet> {
           height: 10,
         ),
         getSendButton(),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.chevron_left,
+              size: 80,
+              color: Colors.white,
+            ),
+            Icon(
+              Icons.chevron_right,
+              size: 80,
+              color: Colors.white,
+            ),
+          ],
+        ),
+        Text(
+          "Swipe",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
       ],
     );
   }
