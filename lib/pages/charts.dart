@@ -81,7 +81,7 @@ class _ChartState extends State<Chart> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return Container(
-                      height: MediaQuery.of(context).size.height - 150,
+                      height: MediaQuery.of(context).size.height - 100,
                       child: chart.BarChart(
                         [
                           minSeries,

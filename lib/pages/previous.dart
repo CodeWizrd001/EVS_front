@@ -60,7 +60,7 @@ class _PreviousState extends State<Previous> {
         child: Column(
           children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height - 200,
+              height: MediaQuery.of(context).size.height - 150,
               child: FutureBuilder(
                 future: getListData(),
                 builder: (context, snapshot) {
@@ -77,18 +77,22 @@ class _PreviousState extends State<Previous> {
             Container(
               child: empty
                   ? RaisedButton(
-                    color: Colors.blue,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100)),
-                      child: Text("Compare With Country",style: TextStyle(color: Colors.white)),
+                      color: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100)),
+                      child: Text("Compare With Country",
+                          style: TextStyle(color: Colors.white)),
                       onPressed: () => null,
                       // color: Colors.grey,
                     )
                   : RaisedButton(
-                    color: Colors.blue,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100)),
-                      child: Text("Compare With Country",style: TextStyle(color: Colors.white),),
+                      color: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100)),
+                      child: Text(
+                        "Compare With Country",
+                        style: TextStyle(color: Colors.white),
+                      ),
                       onPressed: () => Navigator.pushNamed(context, '/compare'),
                     ),
             )

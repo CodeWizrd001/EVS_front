@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:evs_app/pages/charts.dart';
 import 'package:evs_app/pages/magnet.dart';
 import 'package:evs_app/pages/globals.dart';
-import 'package:evs_app/pages/ads.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,7 +26,6 @@ class MyApp extends StatelessWidget {
         '/chart': (context) => Chart(),
         '/history': (context) => Previous(),
         '/compare': (context) => Compare(),
-        '/ad': (context) => Add(),
         '/about': (context) => About(),
       },
     );
@@ -51,7 +49,6 @@ class _HomeState extends State<Home> {
       androidFuture = Info.initInfo();
       init = true;
     }
-    getBannerAd();
   }
 
   @override
@@ -78,19 +75,8 @@ class _HomeState extends State<Home> {
                     CircleAvatar(
                       radius: 35,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 18.5,
-                        ),
-                        Text("Coins : $coins"),
-                        FlatButton(
-                          child: Icon(Icons.refresh),
-                          onPressed: () {
-                            setState(() {});
-                          },
-                        ),
-                      ],
+                    SizedBox(
+                      height: 30,
                     ),
                     Text("Unique ID : ${getId()}")
                   ],
@@ -100,10 +86,6 @@ class _HomeState extends State<Home> {
                 child: Text("About"),
                 onPressed: () => Navigator.pushNamed(context, '/about'),
               ),
-              FlatButton(
-                child: Text("View Ad"),
-                onPressed: () => Navigator.pushNamed(context, '/ad'),
-              )
             ],
           ),
         ),
@@ -180,7 +162,10 @@ class _MainPageState extends State<MainPage> {
                               size: 75,
                             ),
                           ),
-                          Text("Get Magnet",style: TextStyle(color: Colors.white),),
+                          Text(
+                            "Get Magnet",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ],
                       ),
                     ),
@@ -196,7 +181,7 @@ class _MainPageState extends State<MainPage> {
             RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100)),
-                  color: Colors.blue,
+              color: Colors.blue,
               child: Container(
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.width / 3,
@@ -213,7 +198,8 @@ class _MainPageState extends State<MainPage> {
                             color: Colors.white,
                           ),
                         ),
-                        Text("Get Chart",style: TextStyle(color: Colors.white)),
+                        Text("Get Chart",
+                            style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),
@@ -227,12 +213,12 @@ class _MainPageState extends State<MainPage> {
           height: 10,
         ),
         Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100)),
-                  color: Colors.blue,
+              color: Colors.blue,
               child: Container(
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.width / 3,
@@ -249,60 +235,18 @@ class _MainPageState extends State<MainPage> {
                           color: Colors.white,
                         ),
                       ),
-                      Text("Get Previous",style: TextStyle(color: Colors.white)),
+                      Text("Get Previous",
+                          style: TextStyle(color: Colors.white)),
                     ],
                   )),
                 ),
               ),
               onPressed: () => Navigator.pushNamed(context, '/history'),
             ),
-            SizedBox(
-              width: 10,
-            ),
-            RaisedButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100)),
-                color: Colors.blue,
-              child: Container(
-                width: MediaQuery.of(context).size.width / 3,
-                height: MediaQuery.of(context).size.width / 3,
-                child: Center(
-                  child: Center(
-                      child: Column(
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        height: MediaQuery.of(context).size.width / 4,
-                        child: Icon(
-                          Icons.remove_circle,
-                          size: 75,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text("Do Nothing",style: TextStyle(color: Colors.white)),
-                    ],
-                  )),
-                ),
-              ),
-              onPressed: () => null,
-            ),
           ],
         ),
         SizedBox(
           height: 10,
-        ),
-        Center(
-          child: Container(
-            child: FutureBuilder(
-              future: androidFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Text("${androidInfo.androidId}");
-                } else
-                  return CircularProgressIndicator();
-              },
-            ),
-          ),
         ),
       ],
     );

@@ -87,7 +87,7 @@ class _CompareState extends State<Compare> {
         title: Text("Comparison"),
       ),
       body: Container(
-        height: MediaQuery.of(context).size.height - 150,
+        height: MediaQuery.of(context).size.height - 100,
         child: FutureBuilder(
           future: getData(),
           builder: (context, snapshot) {

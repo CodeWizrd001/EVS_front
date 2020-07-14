@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:evs_app/pages/globals.dart';
 import 'package:evs_app/pages/request.dart';
 import 'package:flutter/material.dart';
-import 'package:device_info/device_info.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
 
 int normalise(num value) {
@@ -49,6 +48,46 @@ class _MagnetState extends State<Magnet> {
     color: Colors.black,
     fontSize: 30,
   );
+
+  getFooter(context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.06,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.chevron_left,
+                size: 20,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 5,
+              ),
+              Text(
+                "Swipe",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 5,
+              ),
+              Icon(
+                Icons.chevron_right,
+                size: 20,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   void _checkMagStatus() async {
     await manager.isSensorAvailable(Sensors.MAGNETIC_FIELD).then(
@@ -196,20 +235,23 @@ class _MagnetState extends State<Magnet> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: PageView(
-          controller: magnetPageController,
-          onPageChanged: (value) {
-            _stopMag();
-          },
+        body: Column(
           children: <Widget>[
-            getNormalMaget(),
-            getRadialMagnet(),
             Container(
-              color: Colors.white,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.9,
+              child: PageView(
+                controller: magnetPageController,
+                onPageChanged: (value) {
+                  _stopMag();
+                },
+                children: <Widget>[
+                  getNormalMaget(),
+                  getRadialMagnet(),
+                ],
+              ),
             ),
-            Container(
-              color: Colors.red,
-            )
+            getFooter(context),
           ],
         ),
       ),
@@ -284,41 +326,6 @@ class _MagnetState extends State<Magnet> {
                           child: Center(child: Text("     500")),
                         ),
                       ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
-                      color: started
-                          ? Color.fromRGBO(30, 255, 30, 1)
-                          : Color.fromRGBO(255, 30, 30, 1),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2 - 50,
-                        height: MediaQuery.of(context).size.width / 2 - 50,
-                        child: Center(
-                          child: Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.power,
-                                size:
-                                    MediaQuery.of(context).size.width / 2 - 75,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      onPressed: () {
-                        started = !started;
-                        print(started);
-                        setState(() {
-                          if (started)
-                            _stopMag();
-                          else
-                            _startMag();
-                        });
-                      },
                     ),
                     SizedBox(
                       height: 20,
@@ -422,26 +429,47 @@ class _MagnetState extends State<Magnet> {
                       ],
                     ),
                     SizedBox(
+                      height: 20,
+                    ),
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      color: started
+                          ? Color.fromRGBO(30, 255, 30, 1)
+                          : Color.fromRGBO(255, 30, 30, 1),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 2 - 50,
+                        height: MediaQuery.of(context).size.width / 2 - 50,
+                        child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Icon(
+                                Icons.power,
+                                size:
+                                    MediaQuery.of(context).size.width / 2 - 90,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        started = !started;
+                        print(started);
+                        setState(() {
+                          if (started)
+                            _stopMag();
+                          else
+                            _startMag();
+                        });
+                      },
+                    ),
+                    SizedBox(
                       height: 5,
                     ),
                     getSendButton(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.chevron_left,
-                          size: 80,
-                        ),
-                        Icon(
-                          Icons.chevron_right,
-                          size: 80,
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "Swipe",
-                      style: TextStyle(fontSize: 20),
-                    ),
                   ],
                 ),
               ),
@@ -604,9 +632,12 @@ class _MagnetState extends State<Magnet> {
                 child: Center(
                   child: Column(
                     children: <Widget>[
+                      SizedBox(
+                        height: 15,
+                      ),
                       Icon(
                         Icons.play_circle_filled,
-                        size: MediaQuery.of(context).size.width / 2 - 75,
+                        size: MediaQuery.of(context).size.width / 2 - 90,
                       ),
                       Text("Start"),
                     ],
@@ -628,9 +659,12 @@ class _MagnetState extends State<Magnet> {
                 child: Center(
                   child: Column(
                     children: <Widget>[
+                      SizedBox(
+                        height: 15,
+                      ),
                       Icon(
                         Icons.pause_circle_filled,
-                        size: MediaQuery.of(context).size.width / 2 - 75,
+                        size: MediaQuery.of(context).size.width / 2 - 90,
                       ),
                       Text("Reset Values"),
                     ],
@@ -649,25 +683,6 @@ class _MagnetState extends State<Magnet> {
         getSendButton(),
         SizedBox(
           height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.chevron_left,
-              size: 80,
-              color: Colors.white,
-            ),
-            Icon(
-              Icons.chevron_right,
-              size: 80,
-              color: Colors.white,
-            ),
-          ],
-        ),
-        Text(
-          "Swipe",
-          style: TextStyle(color: Colors.white, fontSize: 20),
         ),
       ],
     );
