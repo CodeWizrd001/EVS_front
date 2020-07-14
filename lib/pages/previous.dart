@@ -77,12 +77,18 @@ class _PreviousState extends State<Previous> {
             Container(
               child: empty
                   ? RaisedButton(
-                      child: Text("Compare With Country"),
+                    color: Colors.blue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100)),
+                      child: Text("Compare With Country",style: TextStyle(color: Colors.white)),
                       onPressed: () => null,
-                      color: Colors.grey,
+                      // color: Colors.grey,
                     )
                   : RaisedButton(
-                      child: Text("Compare With Country"),
+                    color: Colors.blue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100)),
+                      child: Text("Compare With Country",style: TextStyle(color: Colors.white),),
                       onPressed: () => Navigator.pushNamed(context, '/compare'),
                     ),
             )
