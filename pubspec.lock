@@ -104,6 +104,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.0"
+  flutter_sensors:
+    dependency: "direct main"
+    description:
+      name: flutter_sensors
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.6"
   flutter_sim_country_code:
     dependency: "direct main"
     description:
